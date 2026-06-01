@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aguiar Data — Transformamos Dados em Decisões Inteligentes</title>
+  <meta name="description" content="Business Intelligence, Automação de Processos e Inteligência Artificial para empresas de alto crescimento.">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              bg: '#0A0A0A',
+              card: '#111827',
+              cyan: '#00D4FF',
+              mint: '#00FFC6',
+              border: 'rgba(255, 255, 255, 0.05)',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            title: ['Space Grotesk', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts & FontAwesome / Lucide icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- GSAP & ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  <style>
+    body {
+      background-color: #0A0A0A;
+      color: #FFFFFF;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    
+    .font-title {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0A0A0A;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #222;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #00D4FF;
+    }
+
+    /* Glassmorphism */
+    .glass {
+      background: rgba(17, 24, 39, 0.5);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Custom Cursor Glow */
+    .cursor-glow {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(0, 212, 255, 0.08) 0%, rgba(0, 255, 198, 0.02) 50%, transparent 100%);
+      pointer-events: none;
+      position: fixed;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+      mix-blend-mode: screen;
+      transition: width 0.3s ease, height 0.3s ease;
+    }
+
+    /* Neon glows & overlays */
+    .neon-glow-cyan {
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.25);
+    }
+    .neon-glow-mint {
+      box-shadow: 0 0 20px rgba(0, 255, 198, 0.25);
+    }
+    
+    /* Interactive Founder tags container */
+    .holo-tag {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      opacity: 0;
+      visibility: hidden;
+      transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty) + 20px)) scale(0.85);
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s;
+      pointer-events: auto;
+      z-index: 40;
+    }
+    .founder-hover-zone:hover .holo-tag {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(calc(-50% + var(--tx) + var(--mx) * var(--depth) * 1px), calc(-50% + var(--ty) + var(--my) * var(--depth) * 1px)) scale(1);
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.15s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    
+    /* Digital tech grid pattern */
+    .tech-grid {
+      background-size: 16px 16px;
+      background-image: 
+        linear-gradient(to right, rgba(0, 212, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 212, 255, 0.04) 1px, transparent 1px);
+    }
+
+    /* Laser Scanning animation */
+    @keyframes scan {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(320px); }
+      100% { transform: translateY(0); }
+    }
+    .scan-line {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #00D4FF, #00FFC6, transparent);
+      animation: scan 6s linear infinite;
+      opacity: 0.7;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    /* Process line timeline dot animation */
+    .process-line-fill {
+      transform-origin: top;
+      transition: transform 0.1s linear;
+    }
+
+    /* ── Mobile Menu ── */
+    #mobileMenu {
+      transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease;
+    }
+    #mobileMenu.menu-closed {
+      transform: translateX(100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+    #mobileMenu.menu-open {
+      transform: translateX(0);
+      opacity: 1;
+      pointer-events: all;
+    }
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: #fff;
+      border-radius: 2px;
+      transition: transform 0.35s ease, opacity 0.2s ease;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+    /* ── Demo Section ── */
+    .demo-tab-btn { transition: all 0.3s ease; }
+    .demo-tab-btn.active {
+      background: linear-gradient(135deg, rgba(0,212,255,0.18), rgba(0,255,198,0.10));
+      border-color: rgba(0,212,255,0.6) !important;
+      color: #00D4FF !important;
+      box-shadow: 0 0 18px rgba(0,212,255,0.15);
+    }
+    .demo-panel { display: none; }
+    .demo-panel.active { display: block; }
+
+    /* System dashboard styles */
+    @keyframes countUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .kpi-value { animation: countUp 0.6s ease forwards; }
+
+    @keyframes barGrow { from { width: 0; } }
+    .bar-fill { animation: barGrow 1.2s cubic-bezier(0.16,1,0.3,1) forwards; }
+
+    .system-card {
+      background: rgba(17,24,39,0.7);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 20px;
+    }
+    .sys-table th {
+      font-size:10px; text-transform:uppercase; letter-spacing:.06em;
+      color:#6b7280; font-weight:600; padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.05);
+    }
+    .sys-table td {
+      font-size:12px; padding:11px 14px; border-bottom:1px solid rgba(255,255,255,0.03);
+      color:#d1d5db;
+    }
+    .sys-table tr:hover td { background:rgba(255,255,255,0.025); }
+    .status-badge {
+      display:inline-flex; align-items:center; gap:5px;
+      font-size:10px; font-weight:700; padding:3px 10px; border-radius:999px;
+    }
+    .badge-green  { background:rgba(52,211,153,0.12); color:#34d399; border:1px solid rgba(52,211,153,0.2); }
+    .badge-red    { background:rgba(248,113,113,0.12); color:#f87171; border:1px solid rgba(248,113,113,0.2); }
+    .badge-yellow { background:rgba(251,191,36,0.12);  color:#fbbf24; border:1px solid rgba(251,191,36,0.2); }
+    .badge-blue   { background:rgba(0,212,255,0.10);   color:#00D4FF; border:1px solid rgba(0,212,255,0.2); }
+    /* Spreadsheet styles */
+    .sheet-cell {
+      padding: 6px 10px; font-size: 11px;
+      border: 1px solid rgba(255,255,255,0.06); white-space: nowrap;
+    }
+    .sheet-cell.header {
+      background: rgba(255,255,255,0.04); font-weight:600; font-size:10px;
+      color:#9ca3af; text-transform:uppercase; letter-spacing:.04em;
+    }
+    .sheet-cell.error { color:#f87171; }
+    .sheet-cell.warn  { color:#fbbf24; }
+  </style>
+</head>
+<body class="selection:bg-cyan-500 selection:text-black">
+
+  <!-- Interactive Cursor Glow -->
+  <div class="cursor-glow hidden md:block" id="cursorGlow"></div>
+
+  <!-- Background Glow Accents -->
+  <div class="absolute top-0 left-[20%] w-[600px] h-[600px] bg-gradient-radial from-cyan-500/10 to-transparent blur-[120px] pointer-events-none z-0"></div>
+  <div class="absolute top-[30vh] right-[10%] w-[500px] h-[500px] bg-gradient-radial from-emerald-500/5 to-transparent blur-[100px] pointer-events-none z-0"></div>
+
+  <!-- HEADER / NAVIGATION -->
+  <header class="fixed top-0 left-0 right-0 z-50 bg-brand-bg/60 backdrop-blur-md border-b border-white/[0.04]">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <!-- Minimalist Tech Logo Symbol -->
+        <div class="w-8 h-8 relative flex items-center justify-center">
+          <span class="absolute inset-0 bg-gradient-to-tr from-brand-cyan to-brand-mint rounded-lg opacity-80 blur-[6px]"></span>
+          <span class="relative w-7 h-7 bg-brand-bg border border-white/10 rounded-lg flex items-center justify-center font-bold text-sm tracking-tighter text-transparent bg-gradient-to-tr from-brand-cyan to-brand-mint bg-clip-text">
+            AD
+          </span>
+        </div>
+        <span class="font-title font-bold text-lg tracking-wider text-white">AGUIAR DATA</span>
+      </div>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#solucoes" class="text-xs font-semibold uppercase tracking-wider text-gray-400 hover:text-white transition">Soluções</a>
+        <a href="#processo" class="text-xs font-semibold uppercase tracking-wider text-gray-400 hover:text-white transition">Processo</a>
+        <a href="#fundadores" class="text-xs font-semibold uppercase tracking-wider text-gray-400 hover:text-white transition">Quem Somos</a>
+        <a href="#diferenciais" class="text-xs font-semibold uppercase tracking-wider text-gray-400 hover:text-white transition">Diferenciais</a>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="https://www.instagram.com/aguiardata/" target="_blank" class="hidden md:block text-gray-400 hover:text-brand-cyan transition text-lg" aria-label="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://wa.me/5581984130211?text=Vim%20pelo%20site%20da%20Aguiar%20Data%20e%20gostaria%20de%20agendar%20uma%20reunião%20para%20conhecer%20as%20soluções." target="_blank"
+           class="hidden md:inline-flex px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider bg-white text-black hover:bg-brand-cyan hover:text-black transition duration-300 shadow-lg shadow-white/5">
+          Agendar Reunião
+        </a>
+        <!-- Hamburger Button (mobile only) -->
+        <button id="menuBtn" class="md:hidden hamburger flex flex-col gap-[6px] p-1" aria-label="Abrir menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Menu Overlay -->
+  <div id="mobileMenu" class="menu-closed fixed inset-0 z-40 flex flex-col bg-[#0A0A0A]/95 backdrop-blur-xl pt-24 px-8 pb-10">
+    <nav class="flex flex-col gap-6 flex-1">
+      <a href="#solucoes"  class="mobile-nav-link text-2xl font-title font-bold text-white hover:text-brand-cyan transition">Soluções</a>
+      <a href="#demo"      class="mobile-nav-link text-2xl font-title font-bold text-white hover:text-brand-cyan transition">Demo</a>
+      <a href="#processo"  class="mobile-nav-link text-2xl font-title font-bold text-white hover:text-brand-cyan transition">Processo</a>
+      <a href="#fundadores" class="mobile-nav-link text-2xl font-title font-bold text-white hover:text-brand-cyan transition">Quem Somos</a>
+      <a href="#diferenciais" class="mobile-nav-link text-2xl font-title font-bold text-white hover:text-brand-cyan transition">Diferenciais</a>
+    </nav>
+    <a href="https://wa.me/5581984130211?text=Vim%20pelo%20site%20da%20Aguiar%20Data%20e%20gostaria%20de%20agendar%20uma%20reunião%20para%20conhecer%20as%20soluções." target="_blank"
+       class="w-full text-center py-4 rounded-full bg-gradient-to-r from-brand-cyan to-brand-mint text-black font-bold uppercase tracking-wider text-sm">
+      <i class="fab fa-whatsapp mr-2"></i>Agendar Reunião
+    </a>
+  </div>
+
+  <!-- HERO SECTION (100% Height) -->
+  <section class="relative min-height-screen min-h-screen flex items-center justify-center overflow-hidden pt-20 z-10">
+    <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 w-full items-center">
+      
+      <!-- Left Content -->
+      <div class="lg:col-span-6 flex flex-col gap-6 text-left hero-text z-20">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.08] text-gray-300 text-xs font-medium w-fit">
+          <span class="w-2 h-2 rounded-full bg-brand-cyan animate-pulse"></span>
+          PLATAFORMA DE INTELIGÊNCIA E AUTOMAÇÃO
+        </div>
+        <h1 class="font-title text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.05]">
+          Transformamos <br>Dados em <span class="bg-gradient-to-r from-brand-cyan to-brand-mint bg-clip-text text-transparent">Decisões Inteligentes</span>
+        </h1>
+        <p class="text-gray-400 text-base md:text-lg max-w-lg">
+          Business Intelligence, Automação e Inteligência Artificial para empresas que desejam crescer com estratégia, previsibilidade e alta lucratividade.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 mt-2">
+          <a href="https://wa.me/5581984130211?text=Vim%20pelo%20site%20e%20quero%20fazer%20um%20diagnóstico%20gratuito%20da%20minha%20operação.%20Podem%20me%20ajudar?" target="_blank"
+             class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-brand-cyan to-brand-mint text-black font-bold uppercase tracking-wider text-xs px-8 py-4 rounded-full transition duration-300 shadow-lg shadow-cyan-500/20 hover:opacity-90 hover:scale-[1.02] transform">
+            Agendar Reunião
+          </a>
+          <a href="#solucoes"
+             class="inline-flex items-center justify-center bg-transparent border border-white/10 hover:border-white/20 text-white font-bold uppercase tracking-wider text-xs px-8 py-4 rounded-full transition duration-300 hover:bg-white/[0.02]">
+            Ver Soluções
+          </a>
+        </div>
+      </div>
+
+      <!-- Right Interactive Founder & Hologram Section -->
+      <div class="lg:col-span-6 flex justify-center items-center relative z-10 h-[500px]">
+        <!-- Hologram Background Elements -->
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <!-- Outer spinning circles / grids -->
+          <div class="w-[340px] h-[340px] md:w-[420px] md:h-[420px] border border-brand-cyan/20 rounded-full animate-[spin_40s_linear_infinite] flex items-center justify-center">
+            <div class="w-[260px] h-[260px] border border-dashed border-brand-mint/20 rounded-full animate-[spin_20s_linear_infinite_reverse]"></div>
+          </div>
+          <!-- Holographic horizontal code overlay grid -->
+          <div class="absolute w-[300px] md:w-[370px] opacity-10 bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,212,255,0.1)_50%)] bg-[size:100%_4px] h-[300px] md:h-[370px] rounded-full pointer-events-none"></div>
+        </div>
+
+        <!-- Interactive Zone for Founder Image -->
+        <div class="relative founder-hover-zone cursor-pointer flex items-center justify-center w-[400px] h-[450px]" id="interactiveFounderZone" style="--mx: 0px; --my: 0px;">
+          
+          <!-- Cyberpunk Tech Tag Items (Holograms appearing around founder on hover) -->
+          <!-- Left side tags -->
+          <div class="holo-tag" style="--tx: -195px; --ty: -150px; --depth: 0.25;">
+            <div class="glass px-3.5 py-1.5 rounded-xl text-[11px] font-mono text-brand-cyan border border-brand-cyan/30 flex items-center gap-1.5 hover:bg-brand-cyan/15 hover:border-brand-cyan/60 hover:shadow-[0_0_15px_rgba(0,212,255,0.4)] transition-all duration-300">
+              <span class="w-1.5 h-1.5 bg-brand-cyan rounded-full animate-ping"></span> BI & Analytics
+            </div>
+          </div>
+          <div class="holo-tag" style="--tx: -215px; --ty: -20px; --depth: 0.15;">
+            <div class="glass px-3.5 py-1.5 rounded-xl text-[11px] font-mono text-sky-400 border border-sky-400/20 flex items-center gap-1.5 hover:bg-sky-400/15 hover:border-sky-400/50 hover:shadow-[0_0_15px_rgba(56,189,248,0.4)] transition-all duration-300">
+              <i class="fas fa-database text-sky-400"></i> SQL / Bancos
+            </div>
+          </div>
+          <div class="holo-tag" style="--tx: -195px; --ty: 110px; --depth: 0.20;">
+            <div class="glass px-3.5 py-1.5 rounded-xl text-[11px] font-mono text-brand-mint border border-brand-mint/30 flex items-center gap-1.5 hover:bg-brand-mint/15 hover:border-brand-mint/60 hover:shadow-[0_0_15px_rgba(0,255,198,0.4)] transition-all duration-300">
+              <i class="fab fa-python text-brand-mint"></i> Python RPA
+            </div>
+          </div>
+          
+          <!-- Right side tags -->
+          <div class="holo-tag" style="--tx: 195px; --ty: -150px; --depth: 0.30;">
+            <div class="glass px-3.5 py-1.5 rounded-xl text-[11px] font-mono text-purple-400 border border-purple-400/30 flex items-center gap-1.5 hover:bg-purple-400/15 hover:border-purple-400/60 hover:shadow-[0_0_15px_rgba(192,132,252,0.4)] transition-all duration-300">
+              <span class="w-1.5 h-1.5 bg-purple-400 rounded-full animate-pulse"></span> Inteligência Artificial
+            </div>
+          </div>
+          <div class="holo-tag" style="--tx: 215px; --ty: -10px; --depth: 0.18;">
+            <div class="glass px-3.5 py-1.5 rounded-xl text-[11px] font-mono text-amber-400 border border-amber-400/20 flex items-center gap-1.5 hover:bg-amber-400/15 hover:border-amber-400/50 hover:shadow-[0_0_15px_rgba(251,191,36,0.4)] transition-all duration-300">
+              <i class="fas fa-robot text-amber-400"></i> Automação RPA
+            </div>
+          </div>
+          <div class="holo-tag" style="--tx: 195px; --ty: 120px; --depth: 0.22;">
+            <div class="glass px-3.5 py-1.5 rounded-xl text-[11px] font-mono text-emerald-400 border border-emerald-400/20 flex items-center gap-1.5 hover:bg-emerald-400/15 hover:border-emerald-400/50 hover:shadow-[0_0_15px_rgba(52,211,153,0.4)] transition-all duration-300">
+              <i class="fas fa-code text-emerald-400"></i> Dev. Customizado
+            </div>
+          </div>
+
+          <!-- High-Tech Glass Frame Card -->
+          <div class="relative w-72 h-[390px] rounded-2xl p-[1px] bg-gradient-to-br from-brand-cyan/40 via-white/5 to-brand-mint/40 shadow-[0_0_40px_rgba(0,212,255,0.15)] transition duration-500 hover:shadow-[0_0_60px_rgba(0,212,255,0.35)] hover:scale-[1.02]" id="founderCard">
+            <div class="relative w-full h-full bg-brand-card/90 rounded-2xl p-3 overflow-hidden flex flex-col justify-between">
+              <!-- Cyberpunk grid/tech overlay -->
+              <div class="absolute inset-0 tech-grid opacity-20 pointer-events-none"></div>
+              
+              <!-- Animated Scanline -->
+              <div class="scan-line"></div>
+              
+              <!-- Tech Corner Brackets -->
+              <div class="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-brand-cyan rounded-tl z-30 pointer-events-none"></div>
+              <div class="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-brand-cyan rounded-tr z-30 pointer-events-none"></div>
+              <div class="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-brand-mint rounded-bl z-30 pointer-events-none"></div>
+              <div class="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-brand-mint rounded-br z-30 pointer-events-none"></div>
+              
+              <!-- Image inside card with high-tech framing -->
+              <div class="relative w-full h-[82%] rounded-xl overflow-hidden border border-white/5 bg-brand-bg">
+                <img src="image.png" alt="Victor Aguiar" class="w-full h-full object-cover object-top transition duration-700 hover:scale-105 filter brightness-[1.02] contrast-[1.03]">
+                <!-- Neon blue tint filter or overlay on hover -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 z-10"></div>
+                <div class="absolute inset-0 bg-brand-cyan/5 opacity-0 hover:opacity-100 transition duration-300 z-10"></div>
+              </div>
+
+              <!-- Label and title -->
+              <div class="relative z-20 px-2 pb-1 pt-2 flex justify-between items-center">
+                <div>
+                  <span class="text-[9px] uppercase tracking-widest text-brand-mint font-bold flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 bg-brand-mint rounded-full animate-pulse"></span> Founder & CTO
+                  </span>
+                  <h4 class="font-title text-lg font-bold text-white tracking-wide mt-0.5">Victor Aguiar</h4>
+                </div>
+                <!-- Tech status pill -->
+                <div class="text-[9px] font-mono bg-brand-cyan/10 border border-brand-cyan/30 text-brand-cyan px-2 py-0.5 rounded">
+                  SYS ACTIVE
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEÇÃO O QUE FAZEMOS -->
+  <section id="solucoes" class="py-28 relative border-t border-white/[0.04] z-10">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-2xl mx-auto mb-20">
+        <span class="text-xs font-bold uppercase tracking-wider text-brand-cyan">Soluções Corporativas</span>
+        <h2 class="font-title text-3xl md:text-5xl font-bold text-white mt-3">Tecnologia estratégica para o seu negócio</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        
+        <!-- BI -->
+        <div class="group bg-brand-card border border-white/[0.04] rounded-2xl p-8 hover:bg-brand-card/70 hover:border-brand-cyan/30 transition-all duration-500 hover:-translate-y-2 relative overflow-hidden">
+          <span class="absolute top-0 right-0 w-24 h-24 bg-brand-cyan/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity"></span>
+          <div class="w-12 h-12 rounded-xl bg-brand-cyan/10 border border-brand-cyan/20 flex items-center justify-center text-brand-cyan text-xl mb-6 transition duration-500 group-hover:scale-110">
+            <i class="fas fa-chart-pie"></i>
+          </div>
+          <h3 class="font-title text-xl font-bold text-white mb-3">Business Intelligence</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Consolidação e modelagem de bancos de dados para extração de insights gerenciais.
+          </p>
+        </div>
+
+        <!-- IA -->
+        <div class="group bg-brand-card border border-white/[0.04] rounded-2xl p-8 hover:bg-brand-card/70 hover:border-brand-mint/30 transition-all duration-500 hover:-translate-y-2 relative overflow-hidden">
+          <span class="absolute top-0 right-0 w-24 h-24 bg-brand-mint/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity"></span>
+          <div class="w-12 h-12 rounded-xl bg-brand-mint/10 border border-brand-mint/20 flex items-center justify-center text-brand-mint text-xl mb-6 transition duration-500 group-hover:scale-110">
+            <i class="fas fa-brain"></i>
+          </div>
+          <h3 class="font-title text-xl font-bold text-white mb-3">Inteligência Artificial</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Modelagem de IA para automação de atendimento inteligente e previsão de padrões de mercado.
+          </p>
+        </div>
+
+        <!-- Automação -->
+        <div class="group bg-brand-card border border-white/[0.04] rounded-2xl p-8 hover:bg-brand-card/70 hover:border-brand-cyan/30 transition-all duration-500 hover:-translate-y-2 relative overflow-hidden">
+          <span class="absolute top-0 right-0 w-24 h-24 bg-brand-cyan/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity"></span>
+          <div class="w-12 h-12 rounded-xl bg-brand-cyan/10 border border-brand-cyan/20 flex items-center justify-center text-brand-cyan text-xl mb-6 transition duration-500 group-hover:scale-110">
+            <i class="fas fa-cogs"></i>
+          </div>
+          <h3 class="font-title text-xl font-bold text-white mb-3">Automação de Processos</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Eliminação de processos manuais lentos por meio de automação robusta via integrações e scripts.
+          </p>
+        </div>
+
+        <!-- Dashboards Executivos -->
+        <div class="group bg-brand-card border border-white/[0.04] rounded-2xl p-8 hover:bg-brand-card/70 hover:border-brand-mint/30 transition-all duration-500 hover:-translate-y-2 relative overflow-hidden">
+          <span class="absolute top-0 right-0 w-24 h-24 bg-brand-mint/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity"></span>
+          <div class="w-12 h-12 rounded-xl bg-brand-mint/10 border border-brand-mint/20 flex items-center justify-center text-brand-mint text-xl mb-6 transition duration-500 group-hover:scale-110">
+            <i class="fas fa-display"></i>
+          </div>
+          <h3 class="font-title text-xl font-bold text-white mb-3">Dashboards Executivos</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Interfaces elegantes e ricas para acompanhamento direto no celular, tablet ou computador.
+          </p>
+        </div>
+
+        <!-- Desenvolvimento Sob Medida -->
+        <div class="group bg-brand-card border border-white/[0.04] rounded-2xl p-8 hover:bg-brand-card/70 hover:border-brand-cyan/30 transition-all duration-500 hover:-translate-y-2 relative overflow-hidden">
+          <span class="absolute top-0 right-0 w-24 h-24 bg-brand-cyan/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity"></span>
+          <div class="w-12 h-12 rounded-xl bg-brand-cyan/10 border border-brand-cyan/20 flex items-center justify-center text-brand-cyan text-xl mb-6 transition duration-500 group-hover:scale-110">
+            <i class="fas fa-terminal"></i>
+          </div>
+          <h3 class="font-title text-xl font-bold text-white mb-3">Desenvolvimento Sob Medida</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Construção de aplicações exclusivas, otimizando as rotinas internas e integrações web.
+          </p>
+        </div>
+
+        <!-- Integração de Sistemas -->
+        <div class="group bg-brand-card border border-white/[0.04] rounded-2xl p-8 hover:bg-brand-card/70 hover:border-brand-mint/30 transition-all duration-500 hover:-translate-y-2 relative overflow-hidden">
+          <span class="absolute top-0 right-0 w-24 h-24 bg-brand-mint/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity"></span>
+          <div class="w-12 h-12 rounded-xl bg-brand-mint/10 border border-brand-mint/20 flex items-center justify-center text-brand-mint text-xl mb-6 transition duration-500 group-hover:scale-110">
+            <i class="fas fa-network-wired"></i>
+          </div>
+          <h3 class="font-title text-xl font-bold text-white mb-3">Integração de Sistemas</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Sincronização instantânea de plataformas, bancos de dados, CRM e sistemas ERP.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SEÇÃO DEMO — SISTEMA COMPLETO
+  ═══════════════════════════════════════════════════════ -->
+  <section id="demo" class="py-28 relative border-t border-white/[0.04] z-10">
+    <div class="max-w-7xl mx-auto px-6">
+
+      <!-- Header -->
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="text-xs font-bold uppercase tracking-wider text-brand-mint">Demo Interativa — Sistema Real</span>
+        <h2 class="font-title text-3xl md:text-5xl font-bold text-white mt-3">Veja o sistema <span class="bg-gradient-to-r from-brand-cyan to-brand-mint bg-clip-text text-transparent">funcionando ao vivo</span></h2>
+        <p class="text-gray-400 text-sm mt-4">Explore cada módulo do sistema que entregamos aos nossos clientes. Dashboard, inadimplências, clientes ativos e catálogo de produtos — tudo em tempo real.</p>
+      </div>
+
+      <!-- App Window -->
+      <div class="relative rounded-2xl overflow-hidden border border-brand-cyan/20 bg-[#080b12] shadow-[0_0_60px_rgba(0,212,255,0.1)]">
+
+        <!-- Window chrome -->
+        <div class="flex items-center gap-2 px-5 py-3 bg-[#0d111c] border-b border-brand-cyan/10">
+          <div class="w-3 h-3 rounded-full bg-red-500/70"></div>
+          <div class="w-3 h-3 rounded-full bg-yellow-500/70"></div>
+          <div class="w-3 h-3 rounded-full bg-green-500/70"></div>
+          <span class="ml-3 text-[11px] text-gray-400 font-mono">Aguiar Data — Painel de Gestão</span>
+          <span class="ml-auto flex items-center gap-1.5 text-[10px] text-brand-mint font-mono"><span class="w-1.5 h-1.5 rounded-full bg-brand-mint animate-pulse"></span> AO VIVO</span>
+        </div>
+
+        <!-- Mobile tabs (above panels on small screens) -->
+        <div class="md:hidden flex border-b border-white/[0.06] overflow-x-auto bg-[#0a0e1a]">
+          <button onclick="switchSysTab('dashboard')" id="sysTabDashboardM" class="sys-nav active flex-1 py-3 text-[11px] font-semibold whitespace-nowrap px-3 transition-all"><i class="fas fa-gauge-high mr-1"></i>Dashboard</button>
+          <button onclick="switchSysTab('inadimplencia')" id="sysTabInadimplenciaM" class="sys-nav flex-1 py-3 text-[11px] font-semibold whitespace-nowrap px-3 transition-all"><i class="fas fa-triangle-exclamation mr-1 text-red-400"></i>Inadimpl. <span class="bg-red-500 text-white text-[8px] font-bold px-1 rounded-full ml-0.5">3</span></button>
+          <button onclick="switchSysTab('clientes')" id="sysTabClientesM" class="sys-nav flex-1 py-3 text-[11px] font-semibold whitespace-nowrap px-3 transition-all"><i class="fas fa-users mr-1"></i>Clientes</button>
+          <button onclick="switchSysTab('produtos')" id="sysTabProdutosM" class="sys-nav flex-1 py-3 text-[11px] font-semibold whitespace-nowrap px-3 transition-all"><i class="fas fa-box-open mr-1"></i>Produtos</button>
+        </div>
+
+        <div class="flex">
+          <!-- Sidebar -->
+          <div class="hidden md:flex flex-col gap-1 w-48 bg-[#0a0e1a] border-r border-white/[0.05] p-3 pt-4 shrink-0">
+            <p class="text-[9px] uppercase tracking-widest text-gray-600 font-bold px-3 mb-2">Módulos</p>
+            <button onclick="switchSysTab('dashboard')" id="sysTabDashboard" class="sys-nav active flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[12px] font-semibold text-left w-full transition-all">
+              <i class="fas fa-gauge-high w-4 text-center"></i> Dashboard
+            </button>
+            <button onclick="switchSysTab('inadimplencia')" id="sysTabInadimplencia" class="sys-nav flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[12px] font-semibold text-left w-full transition-all">
+              <i class="fas fa-triangle-exclamation w-4 text-center"></i> Inadimplências
+              <span class="ml-auto bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">3</span>
+            </button>
+            <button onclick="switchSysTab('clientes')" id="sysTabClientes" class="sys-nav flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[12px] font-semibold text-left w-full transition-all">
+              <i class="fas fa-users w-4 text-center"></i> Clientes Ativos
+            </button>
+            <button onclick="switchSysTab('produtos')" id="sysTabProdutos" class="sys-nav flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[12px] font-semibold text-left w-full transition-all">
+              <i class="fas fa-box-open w-4 text-center"></i> Produtos
+            </button>
+            <div class="mt-auto pt-4 border-t border-white/[0.05]">
+              <div class="flex items-center gap-2 px-3">
+                <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-brand-cyan to-brand-mint flex items-center justify-center text-black text-[9px] font-bold">AD</div>
+                <div>
+                  <p class="text-[10px] text-white font-semibold">Admin</p>
+                  <p class="text-[9px] text-gray-500">Sua Empresa</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+          <!-- Panels -->
+          <div class="flex-1 overflow-auto">
+
+            <!-- DASHBOARD PANEL -->
+            <div id="sysPanelDashboard" class="demo-panel active p-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-5 gap-2">
+                <h3 class="font-title font-bold text-white text-base">Visão Geral — Maio 2025</h3>
+                <span class="text-[10px] text-brand-cyan font-mono bg-brand-cyan/10 border border-brand-cyan/20 px-2.5 py-1 rounded-lg self-start sm:self-auto">↻ Atualizado agora</span>
+              </div>
+              <div class="grid grid-cols-2 gap-3 mb-5">
+                <div class="system-card"><p class="text-[9px] uppercase tracking-wider text-gray-500 mb-1">Faturamento</p><p class="kpi-value text-lg font-title font-bold text-white">R$ 18.740</p><p class="text-[10px] text-green-400 mt-1"><i class="fas fa-arrow-up text-[8px]"></i> +22% vs abr</p></div>
+                <div class="system-card"><p class="text-[9px] uppercase tracking-wider text-gray-500 mb-1">Ticket Médio</p><p class="kpi-value text-lg font-title font-bold text-white">R$ 937</p><p class="text-[10px] text-green-400 mt-1"><i class="fas fa-arrow-up text-[8px]"></i> +8.1%</p></div>
+                <div class="system-card"><p class="text-[9px] uppercase tracking-wider text-gray-500 mb-1">Inadimplência</p><p class="kpi-value text-lg font-title font-bold text-red-400">R$ 2.190</p><p class="text-[10px] text-red-400 mt-1"><i class="fas fa-triangle-exclamation text-[8px]"></i> 3 clientes</p></div>
+                <div class="system-card"><p class="text-[9px] uppercase tracking-wider text-gray-500 mb-1">Clientes Ativos</p><p class="kpi-value text-lg font-title font-bold text-brand-cyan">20</p><p class="text-[10px] text-brand-mint mt-1"><i class="fas fa-circle-check text-[8px]"></i> 17 em dia</p></div>
+              </div>
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div class="system-card">
+                  <p class="text-xs font-bold text-gray-300 mb-4">Receita por Plano</p>
+                  <div class="space-y-3">
+                    <div><div class="flex justify-between text-[11px] text-gray-400 mb-1"><span>Enterprise</span><span class="text-white font-semibold">R$ 9.800</span></div><div class="h-1.5 rounded-full bg-white/5"><div class="bar-fill h-1.5 rounded-full bg-gradient-to-r from-brand-cyan to-brand-mint" style="width:85%"></div></div></div>
+                    <div><div class="flex justify-between text-[11px] text-gray-400 mb-1"><span>Plano Pro</span><span class="text-white font-semibold">R$ 6.440</span></div><div class="h-1.5 rounded-full bg-white/5"><div class="bar-fill h-1.5 rounded-full bg-gradient-to-r from-purple-500 to-blue-400" style="width:56%;animation-delay:0.15s"></div></div></div>
+                    <div><div class="flex justify-between text-[11px] text-gray-400 mb-1"><span>Plano Basic</span><span class="text-white font-semibold">R$ 2.500</span></div><div class="h-1.5 rounded-full bg-white/5"><div class="bar-fill h-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-400" style="width:22%;animation-delay:0.3s"></div></div></div>
+                  </div>
+                </div>
+                <div class="system-card">
+                  <p class="text-xs font-bold text-gray-300 mb-3">Alertas do Sistema</p>
+                  <div class="space-y-2">
+                    <div class="flex items-center gap-2.5 p-2 rounded-lg bg-red-500/8 border border-red-500/15"><i class="fas fa-bell text-red-400 text-[11px]"></i><span class="text-[11px] text-gray-300 flex-1">Pedro Alves — 18 dias em atraso</span><span class="status-badge badge-red">URGENTE</span></div>
+                    <div class="flex items-center gap-2.5 p-2 rounded-lg bg-yellow-500/8 border border-yellow-500/15"><i class="fas fa-clock text-yellow-400 text-[11px]"></i><span class="text-[11px] text-gray-300 flex-1">Ana Costa — vence em 2 dias</span><span class="status-badge badge-yellow">ATENÇÃO</span></div>
+                    <div class="flex items-center gap-2.5 p-2 rounded-lg bg-brand-cyan/8 border border-brand-cyan/15"><i class="fas fa-chart-line text-brand-cyan text-[11px]"></i><span class="text-[11px] text-gray-300 flex-1">Meta de maio 74% atingida</span><span class="status-badge badge-blue">INFO</span></div>
+                    <div class="flex items-center gap-2.5 p-2 rounded-lg bg-green-500/8 border border-green-500/15"><i class="fas fa-circle-check text-green-400 text-[11px]"></i><span class="text-[11px] text-gray-300 flex-1">Backup automático concluído</span><span class="status-badge badge-green">OK</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- INADIMPLÊNCIAS PANEL -->
+            <div id="sysPanelInadimplencia" class="demo-panel p-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-5 gap-2">
+                <h3 class="font-title font-bold text-white text-base">Inadimplências</h3>
+                <span class="status-badge badge-red self-start"><i class="fas fa-triangle-exclamation text-[9px]"></i> 3 em aberto — R$ 2.190</span>
+              </div>
+              <div class="grid grid-cols-3 gap-3 mb-5">
+                <div class="system-card text-center"><p class="text-[9px] uppercase tracking-wider text-gray-500 mb-1">Total em Atraso</p><p class="text-xl font-title font-bold text-red-400">R$ 2.190</p></div>
+                <div class="system-card text-center"><p class="text-[9px] uppercase tracking-wider text-gray-500 mb-1">Mais Antigo</p><p class="text-xl font-title font-bold text-orange-400">28 dias</p></div>
+                <div class="system-card text-center"><p class="text-[9px] uppercase tracking-wider text-gray-500 mb-1">Recuperados (mês)</p><p class="text-xl font-title font-bold text-green-400">R$ 870</p></div>
+              </div>
+              <div class="rounded-xl overflow-hidden border border-white/[0.05] overflow-x-auto">
+                <table class="sys-table w-full min-w-[480px]">
+                  <thead><tr class="bg-[#0d111c]"><th class="text-left">Cliente</th><th class="text-left">Plano</th><th class="text-left">Valor</th><th class="text-left">Atraso</th><th class="text-left">Contato</th><th class="text-left">Status</th></tr></thead>
+                  <tbody>
+                    <tr><td class="font-semibold text-white">Pedro Alves</td><td>Plano Basic</td><td class="text-red-400 font-semibold">R$ 598</td><td class="text-red-400">18 dias</td><td><a href="#" class="text-brand-cyan text-[11px]"><i class="fab fa-whatsapp"></i> Notificar</a></td><td><span class="status-badge badge-red">CRÍTICO</span></td></tr>
+                    <tr><td class="font-semibold text-white">Fernanda Lima</td><td>Plano Pro</td><td class="text-orange-400 font-semibold">R$ 997</td><td class="text-orange-400">10 dias</td><td><a href="#" class="text-brand-cyan text-[11px]"><i class="fab fa-whatsapp"></i> Notificar</a></td><td><span class="status-badge badge-yellow">URGENTE</span></td></tr>
+                    <tr><td class="font-semibold text-white">Rafael Torres</td><td>Enterprise</td><td class="text-yellow-400 font-semibold">R$ 595</td><td class="text-yellow-400">5 dias</td><td><a href="#" class="text-brand-cyan text-[11px]"><i class="fab fa-whatsapp"></i> Notificar</a></td><td><span class="status-badge badge-yellow">ATENÇÃO</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="mt-4 p-3 rounded-xl bg-brand-cyan/5 border border-brand-cyan/15 flex items-center gap-3">
+                <i class="fas fa-robot text-brand-cyan"></i>
+                <p class="text-[11px] text-gray-300"><span class="text-brand-cyan font-semibold">IA:</span> Recomendo notificar Pedro Alves hoje — probabilidade de recuperação 78% se contatado via WhatsApp antes das 18h.</p>
+              </div>
+            </div>
+
+            <!-- CLIENTES ATIVOS PANEL -->
+            <div id="sysPanelClientes" class="demo-panel p-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-5 gap-2">
+                <h3 class="font-title font-bold text-white text-base">Clientes Ativos</h3>
+                <span class="status-badge badge-green self-start"><i class="fas fa-circle-check text-[9px]"></i> 20 clientes — 17 em dia</span>
+              </div>
+              <div class="rounded-xl overflow-hidden border border-white/[0.05] overflow-x-auto">
+                <table class="sys-table w-full min-w-[500px]">
+                  <thead><tr class="bg-[#0d111c]"><th class="text-left">Cliente</th><th class="text-left">Plano</th><th class="text-left">Mensalidade</th><th class="text-left">Desde</th><th class="text-left">Próx. venc.</th><th class="text-left">Situação</th></tr></thead>
+                  <tbody>
+                    <tr><td class="font-semibold text-white">João Silva</td><td>Plano Pro</td><td>R$ 997</td><td>Jan/24</td><td>05/Jun</td><td><span class="status-badge badge-green">PAGO</span></td></tr>
+                    <tr><td class="font-semibold text-white">Maria Souza</td><td>Plano Basic</td><td>R$ 299</td><td>Mar/24</td><td>03/Jun</td><td><span class="status-badge badge-yellow">PENDENTE</span></td></tr>
+                    <tr><td class="font-semibold text-white">Carlos Lima</td><td>Enterprise</td><td>R$ 2.490</td><td>Fev/24</td><td>10/Jun</td><td><span class="status-badge badge-green">PAGO</span></td></tr>
+                    <tr><td class="font-semibold text-white">Ana Costa</td><td>Plano Pro</td><td>R$ 997</td><td>Abr/25</td><td>02/Jun</td><td><span class="status-badge badge-yellow">VENCE HOJE</span></td></tr>
+                    <tr><td class="font-semibold text-white">Lucas Mendes</td><td>Plano Basic</td><td>R$ 299</td><td>Jan/25</td><td>12/Jun</td><td><span class="status-badge badge-green">PAGO</span></td></tr>
+                    <tr><td class="font-semibold text-white">Camila Rocha</td><td>Enterprise</td><td>R$ 2.490</td><td>Mai/25</td><td>20/Jun</td><td><span class="status-badge badge-blue">NOVO</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="text-[10px] text-gray-600 mt-3 text-right">Exibindo 6 de 20 clientes — dados fictícios para demonstração</p>
+            </div>
+
+            <!-- PRODUTOS PANEL -->
+            <div id="sysPanelProdutos" class="demo-panel p-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
+                <h3 class="font-title font-bold text-white text-base">Catálogo de Planos</h3>
+                <span class="text-[10px] text-brand-mint font-mono bg-brand-mint/10 border border-brand-mint/20 px-2.5 py-1 rounded-lg self-start sm:self-auto flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-brand-mint animate-pulse"></span>Vagas limitadas</span>
+              </div>
+
+              <!-- Marketing banner -->
+              <div class="mb-4 p-3 rounded-xl bg-gradient-to-r from-brand-cyan/10 to-brand-mint/10 border border-brand-cyan/25 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-brand-cyan/15 flex items-center justify-center shrink-0">
+                  <i class="fas fa-tag text-brand-cyan text-sm"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-[11px] text-white font-semibold">Proposta personalizada para o seu negócio</p>
+                  <p class="text-[10px] text-gray-400 mt-0.5">Cada cliente recebe um diagnóstico gratuito e condições exclusivas. Entre em contato para saber o investimento ideal.</p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 gap-4">
+
+                <!-- Basic -->
+                <div class="system-card border-white/10 hover:border-brand-cyan/30 transition-all duration-300 group/card">
+                  <div class="flex justify-between items-start mb-3">
+                    <span class="text-[9px] uppercase tracking-widest text-gray-500 font-bold">Iniciante</span>
+                    <span class="status-badge badge-green">ATIVO</span>
+                  </div>
+                  <p class="font-title text-lg font-bold text-white mb-0.5">Plano Basic</p>
+                  <div class="flex items-center gap-2 mb-3">
+                    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.08]">
+                      <i class="fas fa-lock text-gray-500 text-[9px]"></i>
+                      <span class="text-[10px] text-gray-500 font-mono">Valor sob consulta</span>
+                    </div>
+                  </div>
+                  <div class="space-y-1.5 text-[11px] text-gray-400 mb-4">
+                    <div class="flex items-center gap-2"><i class="fas fa-check text-green-400 text-[9px]"></i> Dashboard gerencial completo</div>
+                    <div class="flex items-center gap-2"><i class="fas fa-check text-green-400 text-[9px]"></i> Controle de até 50 clientes</div>
+                    <div class="flex items-center gap-2"><i class="fas fa-check text-green-400 text-[9px]"></i> Alertas automáticos de vencimento</div>
+                    <div class="flex items-center gap-2 opacity-40"><i class="fas fa-lock text-[9px]"></i> <span>Recursos avançados — <span class="text-brand-cyan">consulte</span></span></div>
+                  </div>
+                  <a href="https://wa.me/5581984130211?text=Vim%20pelo%20site%20da%20Aguiar%20Data%20e%20me%20interessei%20pelo%20Plano%20Basic.%20Gostaria%20de%20saber%20o%20valor%20e%20ver%20uma%20demonstração!" target="_blank"
+                     class="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-[rgba(52,211,153,0.08)] border border-green-400/20 text-green-400 text-[11px] font-bold hover:bg-green-400/15 hover:border-green-400/40 transition-all duration-200 group-hover/card:shadow-[0_0_12px_rgba(52,211,153,0.15)]">
+                    <i class="fab fa-whatsapp text-base"></i> Consultar Valor
+                  </a>
+                </div>
+
+                <!-- Pro -->
+                <div class="system-card border-brand-cyan/30 shadow-[0_0_20px_rgba(0,212,255,0.08)] relative group/card">
+                  <div class="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-brand-cyan to-brand-mint text-black text-[9px] font-black px-3 py-0.5 rounded-full uppercase tracking-wider">Mais Popular</div>
+                  <div class="flex justify-between items-start mb-3 mt-1">
+                    <span class="text-[9px] uppercase tracking-widest text-brand-cyan font-bold">Profissional</span>
+                    <span class="status-badge badge-green">ATIVO</span>
+                  </div>
+                  <p class="font-title text-lg font-bold text-white mb-0.5">Plano Pro</p>
+                  <div class="flex items-center gap-2 mb-3">
+                    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-brand-cyan/[0.07] border border-brand-cyan/20">
+                      <i class="fas fa-lock text-brand-cyan text-[9px]"></i>
+                      <span class="text-[10px] text-brand-cyan font-mono">Valor sob consulta</span>
+                    </div>
+                  </div>
+                  <div class="space-y-1.5 text-[11px] text-gray-400 mb-4">
+                    <div class="flex items-center gap-2"><i class="fas fa-check text-green-400 text-[9px]"></i> Dashboard completo + relatórios</div>
+                    <div class="flex items-center gap-2"><i class="fas fa-check text-green-400 text-[9px]"></i> Clientes ilimitados</div>
+                    <div class="flex items-center gap-2"><i class="fas fa-check text-green-400 text-[9px]"></i> Módulo de inadimplência automático</div>
+                    <div class="flex items-center gap-2"><i class="fas fa-check text-green-400 text-[9px]"></i> Notificações automáticas WhatsApp</div>
+                  </div>
+                  <a href="https://wa.me/5581984130211?text=Vim%20pelo%20site%20da%20Aguiar%20Data%20e%20me%20interessei%20pelo%20Plano%20Pro.%20Gostaria%20de%20saber%20o%20valor%20e%20ver%20uma%20demonstração!" target="_blank"
+                     class="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-gradient-to-r from-brand-cyan/15 to-brand-mint/10 border border-brand-cyan/30 text-brand-cyan text-[11px] font-bold hover:from-brand-cyan/25 hover:to-brand-mint/20 hover:border-brand-cyan/50 transition-all duration-200 shadow-[0_0_14px_rgba(0,212,255,0.12)] group-hover/card:shadow-[0_0_20px_rgba(0,212,255,0.25)]">
+                    <i class="fab fa-whatsapp text-base"></i> Consultar Valor
+                  </a>
+                </div>
+
+                <!-- Enterprise -->
+                <div class="system-card border-purple-500/20 hover:border-purple-500/40 transition-all duration-300 group/card">
+                  <div class="flex justify-between items-start mb-3">
+                    <span class="text-[9px] uppercase tracking-widest text-purple-400 font-bold">Corporativo</span>
+                    <span class="status-badge badge-green">ATIVO</span>
+                  </div>
+                  <p class="font-title text-lg font-bold text-white mb-0.5">Enterprise</p>
+                  <div class="flex items-center gap-2 mb-3">
+                    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-purple-500/[0.07] border border-purple-500/20">
+                      <i class="fas fa-lock text-purple-400 text-[9px]"></i>
+                      <span class="text-[10px] text-purple-400 font-mono">Valor sob consulta</span>
+                    </div>
+                  </div>
+                  <div class="space-y-1.5 text-[11px] text-gray-400 mb-4">
+                    <div class="flex items-center gap-2"><i class="fas fa-check text-green-400 text-[9px]"></i> Tudo do Plano Pro</div>
+                    <div class="flex items-center gap-2"><i class="fas fa-check text-green-400 text-[9px]"></i> Múltiplas filiais e unidades</div>
+                    <div class="flex items-center gap-2"><i class="fas fa-check text-green-400 text-[9px]"></i> Suporte dedicado com SLA garantido</div>
+                    <div class="flex items-center gap-2 opacity-40"><i class="fas fa-lock text-[9px]"></i> <span>Automações exclusivas — <span class="text-purple-400">sob medida</span></span></div>
+                  </div>
+                  <a href="https://wa.me/5581984130211?text=Vim%20pelo%20site%20da%20Aguiar%20Data%20e%20me%20interessei%20pelo%20Plano%20Enterprise.%20Gostaria%20de%20receber%20uma%20proposta%20personalizada!" target="_blank"
+                     class="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-purple-500/10 border border-purple-500/25 text-purple-400 text-[11px] font-bold hover:bg-purple-500/18 hover:border-purple-500/45 transition-all duration-200 group-hover/card:shadow-[0_0_12px_rgba(168,85,247,0.15)]">
+                    <i class="fab fa-whatsapp text-base"></i> Consultar Valor
+                  </a>
+                </div>
+
+              </div>
+
+              <!-- Bottom nudge -->
+              <div class="mt-4 p-3 rounded-xl bg-white/[0.025] border border-white/[0.06] flex items-center gap-3">
+                <i class="fas fa-comment-dots text-brand-mint text-sm shrink-0"></i>
+                <p class="text-[10px] text-gray-400 leading-relaxed">💡 <span class="text-white font-semibold">Diagnóstico gratuito incluso.</span> Envie uma mensagem e receba uma proposta personalizada para o porte do seu negócio em menos de 24h.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Bottom bar -->
+        <div class="flex items-center gap-4 px-5 py-3 bg-[#0a0e1a] border-t border-white/[0.05]">
+          <span class="text-[10px] text-gray-600 font-mono flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span> Sistema online — 99.9% uptime</span>
+          <span class="ml-auto text-[10px] text-gray-600 font-mono">v2.4.1 · Aguiar Data Platform</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- SEÇÃO RESULTADOS RETIRED -->
+
+  <!-- SEÇÃO PROCESSO (Timeline com ScrollTrigger) -->
+  <section id="processo" class="py-28 relative z-10">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-2xl mx-auto mb-24">
+        <span class="text-xs font-bold uppercase tracking-wider text-brand-cyan font-title">Metodologia</span>
+        <h2 class="font-title text-3xl md:text-5xl font-bold text-white mt-3">Como entregamos inteligência gerencial</h2>
+      </div>
+
+      <!-- Timeline Container -->
+      <div class="relative max-w-4xl mx-auto">
+        <!-- Progress Bar Background Line -->
+        <div class="absolute left-6 md:left-1/2 top-0 bottom-0 w-[2px] bg-white/[0.06] -translate-x-1/2 z-0">
+          <div class="w-full h-full bg-gradient-to-b from-brand-cyan to-brand-mint process-line-fill transform scale-y-0 origin-top" id="timelineProgress"></div>
+        </div>
+
+        <!-- Etapa 1 -->
+        <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 mb-20 process-step">
+          <div class="flex items-center md:justify-end">
+            <div class="w-12 h-12 rounded-full bg-brand-bg border border-brand-cyan flex items-center justify-center text-brand-cyan font-bold text-lg absolute left-6 md:left-1/2 -translate-x-1/2 z-20">
+              1
+            </div>
+            <div class="pl-16 md:pl-0 md:pr-12 md:text-right">
+              <span class="text-xs font-mono text-brand-cyan uppercase tracking-wider font-bold">Fase 1</span>
+              <h3 class="font-title text-xl font-bold text-white mt-1">Diagnóstico</h3>
+              <p class="text-gray-400 text-sm mt-2 leading-relaxed">
+                Mapeamos todos os gargalos operacionais, sistemas legados e fluxos de dados manuais.
+              </p>
+            </div>
+          </div>
+          <div class="hidden md:block"></div>
+        </div>
+
+        <!-- Etapa 2 -->
+        <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 mb-20 process-step">
+          <div class="hidden md:block"></div>
+          <div class="flex items-center">
+            <div class="w-12 h-12 rounded-full bg-brand-bg border border-brand-mint flex items-center justify-center text-brand-mint font-bold text-lg absolute left-6 md:left-1/2 -translate-x-1/2 z-20">
+              2
+            </div>
+            <div class="pl-16 md:pl-12">
+              <span class="text-xs font-mono text-brand-mint uppercase tracking-wider font-bold">Fase 2</span>
+              <h3 class="font-title text-xl font-bold text-white mt-1">Estratégia</h3>
+              <p class="text-gray-400 text-sm mt-2 leading-relaxed">
+                Desenho detalhado da arquitetura de integração e relatórios necessários para a tomada de decisão.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Etapa 3 -->
+        <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 mb-20 process-step">
+          <div class="flex items-center md:justify-end">
+            <div class="w-12 h-12 rounded-full bg-brand-bg border border-brand-cyan flex items-center justify-center text-brand-cyan font-bold text-lg absolute left-6 md:left-1/2 -translate-x-1/2 z-20">
+              3
+            </div>
+            <div class="pl-16 md:pl-0 md:pr-12 md:text-right">
+              <span class="text-xs font-mono text-brand-cyan uppercase tracking-wider font-bold">Fase 3</span>
+              <h3 class="font-title text-xl font-bold text-white mt-1">Implementação</h3>
+              <p class="text-gray-400 text-sm mt-2 leading-relaxed">
+                Programação de APIs, conexões de dados e automação de alertas e fluxos rotineiros.
+              </p>
+            </div>
+          </div>
+          <div class="hidden md:block"></div>
+        </div>
+
+        <!-- Etapa 4 -->
+        <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 mb-20 process-step">
+          <div class="hidden md:block"></div>
+          <div class="flex items-center">
+            <div class="w-12 h-12 rounded-full bg-brand-bg border border-brand-mint flex items-center justify-center text-brand-mint font-bold text-lg absolute left-6 md:left-1/2 -translate-x-1/2 z-20">
+              4
+            </div>
+            <div class="pl-16 md:pl-12">
+              <span class="text-xs font-mono text-brand-mint uppercase tracking-wider font-bold">Fase 4</span>
+              <h3 class="font-title text-xl font-bold text-white mt-1">Monitoramento</h3>
+              <p class="text-gray-400 text-sm mt-2 leading-relaxed">
+                Testes em ambiente de produção, validação de integridade dos dados e treinamento básico de equipe.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Etapa 5 -->
+        <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 process-step">
+          <div class="flex items-center md:justify-end">
+            <div class="w-12 h-12 rounded-full bg-brand-bg border border-brand-cyan flex items-center justify-center text-brand-cyan font-bold text-lg absolute left-6 md:left-1/2 -translate-x-1/2 z-20">
+              5
+            </div>
+            <div class="pl-16 md:pl-0 md:pr-12 md:text-right">
+              <span class="text-xs font-mono text-brand-cyan uppercase tracking-wider font-bold">Fase 5</span>
+              <h3 class="font-title text-xl font-bold text-white mt-1">Escala</h3>
+              <p class="text-gray-400 text-sm mt-2 leading-relaxed">
+                Expansão e criação de novos painéis conforme sua operação ganha velocidade comercial.
+              </p>
+            </div>
+          </div>
+          <div class="hidden md:block"></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SEÇÃO FUNDADORES (Cards Premium com Hover Reveal) -->
+  <section id="fundadores" class="py-28 bg-gray-950/20 border-t border-white/[0.04] relative z-10">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-2xl mx-auto mb-20">
+        <span class="text-xs font-bold uppercase tracking-wider text-brand-cyan">Liderança</span>
+        <h2 class="font-title text-3xl md:text-5xl font-bold text-white mt-3">Especialistas e Engenharia de Soluções</h2>
+      </div>
+
+      <div class="flex flex-col md:flex-row justify-center items-stretch gap-8 md:gap-12 max-w-5xl mx-auto">
+        <!-- Founder Card -->
+        <div class="group relative w-full max-w-sm rounded-2xl p-[1px] bg-gradient-to-br from-transparent to-transparent hover:from-brand-cyan/30 hover:to-brand-mint/30 shadow-2xl transition duration-500 hover:shadow-[0_0_35px_rgba(0,212,255,0.2)]">
+          <div class="relative w-full h-full bg-brand-card/90 rounded-2xl p-4 overflow-hidden flex flex-col justify-between">
+            <!-- Grid pattern on hover -->
+            <div class="absolute inset-0 tech-grid opacity-0 group-hover:opacity-15 pointer-events-none transition duration-500"></div>
+            
+            <!-- Scan line on hover -->
+            <div class="scan-line opacity-0 group-hover:opacity-60 transition duration-500"></div>
+
+            <!-- Corner tech brackets -->
+            <div class="absolute top-3 left-3 w-3.5 h-3.5 border-t border-l border-brand-cyan/0 group-hover:border-brand-cyan/50 rounded-tl transition duration-500 pointer-events-none"></div>
+            <div class="absolute top-3 right-3 w-3.5 h-3.5 border-t border-r border-brand-cyan/0 group-hover:border-brand-cyan/50 rounded-tr transition duration-500 pointer-events-none"></div>
+            <div class="absolute bottom-3 left-3 w-3.5 h-3.5 border-b border-l border-brand-mint/0 group-hover:border-brand-mint/50 rounded-bl transition duration-500 pointer-events-none"></div>
+            <div class="absolute bottom-3 right-3 w-3.5 h-3.5 border-b border-r border-brand-mint/0 group-hover:border-brand-mint/50 rounded-br transition duration-500 pointer-events-none"></div>
+
+            <!-- Image -->
+            <div>
+              <div class="relative w-full h-80 rounded-xl overflow-hidden mb-6 border border-white/5 bg-brand-bg">
+                <img src="image.png" alt="Victor Aguiar" class="w-full h-full object-cover object-top transition duration-700 group-hover:scale-[1.03] filter brightness-[1.01]">
+                <div class="absolute inset-0 bg-gradient-to-t from-brand-card via-brand-card/10 to-transparent opacity-90"></div>
+              </div>
+
+              <!-- Text Information -->
+              <div class="px-2 relative z-10">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs uppercase tracking-widest text-brand-cyan font-bold">Founder & CEO</span>
+                  <span class="text-[9px] font-mono text-brand-mint border border-brand-mint/20 px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition duration-500">CTO</span>
+                </div>
+                <h3 class="font-title text-2xl font-bold text-white mt-0.5">Victor Aguiar</h3>
+                <p class="text-sm text-gray-400 mb-6">Especialista em Business Intelligence e Automação de Processos.</p>
+              </div>
+            </div>
+            
+            <!-- Hover Reveal Info (Specific tools, projects and experience) -->
+            <div class="px-2 relative z-10 opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-56 transition-all duration-500 overflow-hidden border-t border-white/[0.05] pt-4 space-y-4">
+              <div>
+                <span class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Especialidades</span>
+                <p class="text-xs text-gray-300 mt-1">BI & Analytics, Modelagem de Bancos de Dados Relacionais, Automação Corporativa e IA aplicada.</p>
+              </div>
+              <div>
+                <span class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Ferramentas</span>
+                <div class="flex flex-wrap gap-1.5 mt-1.5">
+                  <span class="text-[10px] px-2 py-0.5 bg-white/5 border border-white/10 text-white rounded">SQL</span>
+                  <span class="text-[10px] px-2 py-0.5 bg-white/5 border border-white/10 text-white rounded">Python</span>
+                  <span class="text-[10px] px-2 py-0.5 bg-white/5 border border-white/10 text-white rounded">RPA</span>
+                  <span class="text-[10px] px-2 py-0.5 bg-white/5 border border-white/10 text-white rounded">API Rest</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Co-founder Card -->
+        <div class="group relative w-full max-w-sm rounded-2xl p-[1px] bg-gradient-to-br from-transparent to-transparent hover:from-brand-cyan/30 hover:to-brand-mint/30 shadow-2xl transition duration-500 hover:shadow-[0_0_35px_rgba(0,212,255,0.2)]">
+          <div class="relative w-full h-full bg-brand-card/90 rounded-2xl p-4 overflow-hidden flex flex-col justify-between">
+            <!-- Grid pattern on hover -->
+            <div class="absolute inset-0 tech-grid opacity-0 group-hover:opacity-15 pointer-events-none transition duration-500"></div>
+            
+            <!-- Scan line on hover -->
+            <div class="scan-line opacity-0 group-hover:opacity-60 transition duration-500"></div>
+
+            <!-- Corner tech brackets -->
+            <div class="absolute top-3 left-3 w-3.5 h-3.5 border-t border-l border-brand-cyan/0 group-hover:border-brand-cyan/50 rounded-tl transition duration-500 pointer-events-none"></div>
+            <div class="absolute top-3 right-3 w-3.5 h-3.5 border-t border-r border-brand-cyan/0 group-hover:border-brand-cyan/50 rounded-tr transition duration-500 pointer-events-none"></div>
+            <div class="absolute bottom-3 left-3 w-3.5 h-3.5 border-b border-l border-brand-mint/0 group-hover:border-brand-mint/50 rounded-bl transition duration-500 pointer-events-none"></div>
+            <div class="absolute bottom-3 right-3 w-3.5 h-3.5 border-b border-r border-brand-mint/0 group-hover:border-brand-mint/50 rounded-br transition duration-500 pointer-events-none"></div>
+
+            <!-- Image -->
+            <div>
+              <div class="relative w-full h-80 rounded-xl overflow-hidden mb-6 border border-white/5 bg-brand-bg">
+                <img src="image%20copy.png" alt="Matheus Guedes" class="w-full h-full object-cover object-top transition duration-700 group-hover:scale-[1.03] filter brightness-[1.01]">
+                <div class="absolute inset-0 bg-gradient-to-t from-brand-card via-brand-card/10 to-transparent opacity-90"></div>
+              </div>
+
+              <!-- Text Information -->
+              <div class="px-2 relative z-10">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs uppercase tracking-widest text-brand-cyan font-bold">Co-Founder & CGO</span>
+                  <span class="text-[9px] font-mono text-brand-mint border border-brand-mint/20 px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition duration-500">GROWTH</span>
+                </div>
+                <h3 class="font-title text-2xl font-bold text-white mt-0.5">Matheus Guedes</h3>
+                <p class="text-sm text-gray-400 mb-6">Responsável por Growth Engineering, Operações de Tráfego Pago e Branding Digital.</p>
+              </div>
+            </div>
+            
+            <!-- Hover Reveal Info (Specific tools, projects and experience) -->
+            <div class="px-2 relative z-10 opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-56 transition-all duration-500 overflow-hidden border-t border-white/[0.05] pt-4 space-y-4">
+              <div>
+                <span class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Especialidades</span>
+                <p class="text-xs text-gray-300 mt-1">Paid Traffic Optimization (aquisição paga), Modelagem de Funis de Conversão, Posicionamento de Marca e Atração de Leads B2B.</p>
+              </div>
+              <div>
+                <span class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Ferramentas</span>
+                <div class="flex flex-wrap gap-1.5 mt-1.5">
+                  <span class="text-[10px] px-2 py-0.5 bg-white/5 border border-white/10 text-white rounded">Meta Ads</span>
+                  <span class="text-[10px] px-2 py-0.5 bg-white/5 border border-white/10 text-white rounded">Google Ads</span>
+                  <span class="text-[10px] px-2 py-0.5 bg-white/5 border border-white/10 text-white rounded">Copywriting</span>
+                  <span class="text-[10px] px-2 py-0.5 bg-white/5 border border-white/10 text-white rounded">Google Analytics</span>
+                  <span class="text-[10px] px-2 py-0.5 bg-white/5 border border-white/10 text-white rounded">Branding</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEÇÃO DIFERENCIAIS -->
+  <section id="diferenciais" class="py-28 relative border-t border-white/[0.04] z-10">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-2xl mx-auto mb-20">
+        <span class="text-xs font-bold uppercase tracking-wider text-brand-cyan">Nossos Diferenciais</span>
+        <h2 class="font-title text-3xl md:text-5xl font-bold text-white mt-3">Por que escolher a Aguiar Data?</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        
+        <!-- Diferencial 1 -->
+        <div class="bg-brand-card/30 border border-white/[0.05] rounded-2xl p-8 hover:border-brand-cyan/20 transition-all duration-300">
+          <div class="w-10 h-10 rounded-lg bg-brand-cyan/10 flex items-center justify-center text-brand-cyan text-lg mb-6">
+            <i class="fas fa-handshake"></i>
+          </div>
+          <h3 class="font-title text-lg font-bold text-white mb-2">Atendimento personalizado</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Consultoria e suporte focado diretamente nas necessidades reais de sua equipe.
+          </p>
+        </div>
+
+        <!-- Diferencial 2 -->
+        <div class="bg-brand-card/30 border border-white/[0.05] rounded-2xl p-8 hover:border-brand-mint/20 transition-all duration-300">
+          <div class="w-10 h-10 rounded-lg bg-brand-mint/10 flex items-center justify-center text-brand-mint text-lg mb-6">
+            <i class="fas fa-sliders-h"></i>
+          </div>
+          <h3 class="font-title text-lg font-bold text-white mb-2">Soluções sob medida</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Nada de soluções genéricas. Desenvolvemos o que sua empresa realmente precisa para expandir.
+          </p>
+        </div>
+
+        <!-- Diferencial 3 -->
+        <div class="bg-brand-card/30 border border-white/[0.05] rounded-2xl p-8 hover:border-brand-cyan/20 transition-all duration-300">
+          <div class="w-10 h-10 rounded-lg bg-brand-cyan/10 flex items-center justify-center text-brand-cyan text-lg mb-6">
+            <i class="fas fa-brain"></i>
+          </div>
+          <h3 class="font-title text-lg font-bold text-white mb-2">Automação inteligente</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Processos integrados de ponta a ponta sem ruídos ou complexidade para a sua gestão diária.
+          </p>
+        </div>
+
+        <!-- Diferencial 4 -->
+        <div class="bg-brand-card/30 border border-white/[0.05] rounded-2xl p-8 hover:border-brand-mint/20 transition-all duration-300">
+          <div class="w-10 h-10 rounded-lg bg-brand-mint/10 flex items-center justify-center text-brand-mint text-lg mb-6">
+            <i class="fas fa-percentage"></i>
+          </div>
+          <h3 class="font-title text-lg font-bold text-white mb-2">Foco total em ROI</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Nossos painéis e automações visam economizar horas operacionais e maximizar margens comerciais.
+          </p>
+        </div>
+
+        <!-- Diferencial 5 -->
+        <div class="bg-brand-card/30 border border-white/[0.05] rounded-2xl p-8 hover:border-brand-cyan/20 transition-all duration-300">
+          <div class="w-10 h-10 rounded-lg bg-brand-cyan/10 flex items-center justify-center text-brand-cyan text-lg mb-6">
+            <i class="fas fa-link"></i>
+          </div>
+          <h3 class="font-title text-lg font-bold text-white mb-2">Integração nativa</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Conexão fluida com todos os CRMs, ERPs e ferramentas que seu time operacional já utiliza.
+          </p>
+        </div>
+
+        <!-- Diferencial 6 -->
+        <div class="bg-brand-card/30 border border-white/[0.05] rounded-2xl p-8 hover:border-brand-mint/20 transition-all duration-300">
+          <div class="w-10 h-10 rounded-lg bg-brand-mint/10 flex items-center justify-center text-brand-mint text-lg mb-6">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <h3 class="font-title text-lg font-bold text-white mb-2">Desenvolvimento rápido</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Entrega ágil e sprints estruturadas para você ver os primeiros resultados nas primeiras semanas.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL (Tela Impactante) -->
+  <section class="py-32 bg-gradient-to-b from-brand-bg to-black border-t border-white/[0.04] relative z-10">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <h2 class="font-title text-3xl md:text-6xl font-bold tracking-tight text-white mb-6 leading-[1.1]">
+        Pronto para transformar seus dados em resultados?
+      </h2>
+      <p class="text-gray-400 text-lg max-w-xl mx-auto mb-10">
+        Descubra como nossa engenharia de automação e dados pode acelerar sua empresa.
+      </p>
+      
+      <a href="https://wa.me/5581984130211?text=Vim%20pelo%20site%20da%20Aguiar%20Data%20e%20quero%20iniciar%20meu%20diagnóstico%20gratuito.%20Podem%20me%20atender?" target="_blank"
+         class="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-brand-cyan to-brand-mint text-black font-bold uppercase tracking-wider text-sm px-10 py-5 rounded-full shadow-2xl shadow-cyan-500/20 transition duration-300 hover:scale-[1.02] transform">
+        <i class="fab fa-whatsapp text-lg"></i>
+        Agendar Diagnóstico Gratuito
+      </a>
+    </div>
+  </section>
+
+  <!-- FLOATING WHATSAPP BUTTON -->
+  <a id="whatsappFloat"
+     href="https://wa.me/5581984130211?text=Vim%20pelo%20site%20da%20Aguiar%20Data%20e%20gostaria%20de%20falar%20com%20a%20equipe!"
+     target="_blank"
+     aria-label="WhatsApp"
+     style="
+       position: fixed;
+       bottom: 28px;
+       right: 28px;
+       z-index: 9998;
+       width: 60px;
+       height: 60px;
+       border-radius: 50%;
+       background: linear-gradient(135deg, #25D366, #128C7E);
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       box-shadow: 0 4px 24px rgba(37,211,102,0.45), 0 0 0 0 rgba(37,211,102,0.4);
+       animation: waPulse 2.5s infinite;
+       transition: transform 0.25s ease, box-shadow 0.25s ease;
+       text-decoration: none;
+     ">
+    <i class="fab fa-whatsapp" style="color:#fff;font-size:28px;"></i>
+  </a>
+  <style>
+    @keyframes waPulse {
+      0%   { box-shadow: 0 4px 24px rgba(37,211,102,0.45), 0 0 0 0   rgba(37,211,102,0.4); }
+      70%  { box-shadow: 0 4px 24px rgba(37,211,102,0.45), 0 0 0 18px rgba(37,211,102,0); }
+      100% { box-shadow: 0 4px 24px rgba(37,211,102,0.45), 0 0 0 0   rgba(37,211,102,0); }
+    }
+    #whatsappFloat:hover { transform: scale(1.12) rotate(-5deg); }
+  </style>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-white/[0.04] bg-black py-16 relative z-10">
+    <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+      <div class="md:col-span-4 flex flex-col gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-brand-cyan rounded-lg flex items-center justify-center font-bold text-black text-sm">
+            A
+          </div>
+          <span class="font-title font-bold text-lg text-white">
+            AGUIAR DATA
+          </span>
+        </div>
+        <p class="text-gray-500 text-xs leading-relaxed max-w-xs">
+          Soluções corporativas de Business Intelligence, Inteligência Artificial e automações integradas de sistemas.
+        </p>
+      </div>
+
+      <div class="md:col-span-5 flex flex-col gap-2 md:items-center text-xs text-gray-500">
+        <span>Fale conosco: <a href="mailto:contato@aguiardata.com" class="text-gray-400 hover:text-white">contato@aguiardata.com</a></span>
+        <span>WhatsApp: <a href="https://wa.me/5581984130211" class="text-gray-400 hover:text-white">+55 (81) 98413-0211</a></span>
+        <span class="mt-4 md:mt-0">&copy; 2026 Aguiar Data. Todos os direitos reservados.</span>
+      </div>
+
+      <div class="md:col-span-3 flex justify-end gap-3">
+        <a href="https://www.instagram.com/aguiardata/" target="_blank" class="w-10 h-10 rounded-full bg-brand-card/50 border border-white/5 hover:border-brand-cyan/40 hover:text-brand-cyan text-gray-400 flex items-center justify-center transition duration-300" aria-label="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://wa.me/5581984130211" target="_blank" class="w-10 h-10 rounded-full bg-brand-card/50 border border-white/5 hover:border-brand-mint/40 hover:text-brand-mint text-gray-400 flex items-center justify-center transition duration-300" aria-label="WhatsApp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- CUSTOM SCRIPTS -->
+  <script>
+    // ── Mobile Menu ──
+    const menuBtn  = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    let menuOpen = false;
+
+    function toggleMenu(force) {
+      menuOpen = force !== undefined ? force : !menuOpen;
+      menuBtn.classList.toggle('open', menuOpen);
+      mobileMenu.classList.toggle('menu-open',   menuOpen);
+      mobileMenu.classList.toggle('menu-closed', !menuOpen);
+      document.body.style.overflow = menuOpen ? 'hidden' : '';
+    }
+
+    menuBtn.addEventListener('click', () => toggleMenu());
+    document.querySelectorAll('.mobile-nav-link').forEach(link =>
+      link.addEventListener('click', () => toggleMenu(false))
+    );
+
+    // ── System Nav Tabs ──
+    const sysTabMap = {
+      dashboard:    { btn: ['sysTabDashboard','sysTabDashboardM'],    panel: 'sysPanelDashboard' },
+      inadimplencia:{ btn: ['sysTabInadimplencia','sysTabInadimplenciaM'], panel: 'sysPanelInadimplencia' },
+      clientes:     { btn: ['sysTabClientes','sysTabClientesM'],      panel: 'sysPanelClientes' },
+      produtos:     { btn: ['sysTabProdutos','sysTabProdutosM'],      panel: 'sysPanelProdutos' },
+    };
+
+    function switchSysTab(key) {
+      Object.entries(sysTabMap).forEach(([k, v]) => {
+        const isActive = k === key;
+        v.btn.forEach(id => { const el = document.getElementById(id); if(el) el.classList.toggle('active', isActive); });
+        const panel = document.getElementById(v.panel);
+        if(panel) panel.classList.toggle('active', isActive);
+      });
+      if(key !== 'inadimplencia') {
+        document.querySelectorAll('.bar-fill').forEach(b => { b.style.animation='none'; b.offsetHeight; b.style.animation=''; });
+      }
+    }
+  </script>
+  <style>
+    .sys-nav { color: #6b7280; }
+    .sys-nav:hover { background: rgba(255,255,255,0.04); color: #d1d5db; }
+    .sys-nav.active { background: linear-gradient(135deg,rgba(0,212,255,0.15),rgba(0,255,198,0.08)); color: #00D4FF; }
+  </style>
+
+  <script>
+    // GSAP Scroll Animations Setup
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Hero content animations
+    gsap.from('.hero-text', {
+      opacity: 0,
+      x: -50,
+      duration: 1.2,
+      ease: 'power3.out'
+    });
+
+    gsap.from('.founder-hover-zone', {
+      opacity: 0,
+      scale: 0.95,
+      duration: 1.4,
+      ease: 'power3.out',
+      delay: 0.2
+    });
+
+    // 3D Tilt & Parallax effect on interactive founder card & tags
+    const card = document.getElementById('founderCard');
+    const zone = document.getElementById('interactiveFounderZone');
+
+    zone.addEventListener('mousemove', (e) => {
+      const rect = zone.getBoundingClientRect();
+      // Calculate mouse position relative to the zone center
+      const xc = rect.width / 2;
+      const yc = rect.height / 2;
+      const mx = e.clientX - rect.left - xc;
+      const my = e.clientY - rect.top - yc;
+      
+      // Update CSS variables for tags parallax (unitless values for safer CSS calc multiplication)
+      zone.style.setProperty('--mx', mx);
+      zone.style.setProperty('--my', my);
+      
+      // Calculate 3D tilt angles for the card
+      const angleX = -my / 15;
+      const angleY = mx / 15;
+      
+      card.style.transform = `rotateX(${angleX}deg) rotateY(${angleY}deg) scale(1.02)`;
+    });
+
+    zone.addEventListener('mouseleave', () => {
+      card.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+      zone.style.setProperty('--mx', '0px');
+      zone.style.setProperty('--my', '0px');
+    });
+
+    // Cursor glow follow
+    const cursor = document.getElementById('cursorGlow');
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+
+    // Timeline line progress scrolling animation
+    gsap.to('#timelineProgress', {
+      scaleY: 1,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#processo',
+        start: 'top center',
+        end: 'bottom center',
+        scrub: true
+      }
+    });
+
+    // Sequential fade-in of steps in process timeline
+    document.querySelectorAll('.process-step').forEach((step) => {
+      gsap.from(step, {
+        opacity: 0.2,
+        y: 30,
+        scrollTrigger: {
+          trigger: step,
+          start: 'top 80%',
+          end: 'top 50%',
+          scrub: true
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
