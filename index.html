@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="scroll-smooth">
+<html lang="pt-BR" class="scroll-smooth" style="overflow-x: hidden;">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>Aguiar Data — Transformamos Dados em Decisões Inteligentes</title>
   <meta name="description" content="Business Intelligence, Automação de Processos e Inteligência Artificial para empresas de alto crescimento.">
   
@@ -231,7 +231,7 @@
     .sheet-cell.warn  { color:#fbbf24; }
   </style>
 </head>
-<body class="selection:bg-cyan-500 selection:text-black">
+<body class="selection:bg-cyan-500 selection:text-black" style="overflow-x: hidden; max-width: 100vw;">
 
   <!-- Interactive Cursor Glow -->
   <div class="cursor-glow hidden md:block" id="cursorGlow"></div>
@@ -241,17 +241,17 @@
   <div class="absolute top-[30vh] right-[10%] w-[500px] h-[500px] bg-gradient-radial from-emerald-500/5 to-transparent blur-[100px] pointer-events-none z-0"></div>
 
   <!-- HEADER / NAVIGATION -->
-  <header class="fixed top-0 left-0 right-0 z-50 bg-brand-bg/60 backdrop-blur-md border-b border-white/[0.04]">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-      <div class="flex items-center gap-3">
+  <header class="fixed top-0 left-0 right-0 z-50 bg-brand-bg/60 backdrop-blur-md border-b border-white/[0.04]" style="max-width: 100vw; overflow: hidden;">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center" style="min-width: 0; width: 100%;">
+      <div class="flex items-center gap-3 min-w-0">
         <!-- Minimalist Tech Logo Symbol -->
-        <div class="w-8 h-8 relative flex items-center justify-center">
+        <div class="w-8 h-8 relative flex items-center justify-center shrink-0">
           <span class="absolute inset-0 bg-gradient-to-tr from-brand-cyan to-brand-mint rounded-lg opacity-80 blur-[6px]"></span>
           <span class="relative w-7 h-7 bg-brand-bg border border-white/10 rounded-lg flex items-center justify-center font-bold text-sm tracking-tighter text-transparent bg-gradient-to-tr from-brand-cyan to-brand-mint bg-clip-text">
             AD
           </span>
         </div>
-        <span class="font-title font-bold text-lg tracking-wider text-white">AGUIAR DATA</span>
+        <span class="font-title font-bold text-lg tracking-wider text-white truncate">AGUIAR DATA</span>
       </div>
       <div class="hidden md:flex items-center gap-8">
         <a href="#solucoes" class="text-xs font-semibold uppercase tracking-wider text-gray-400 hover:text-white transition">Soluções</a>
@@ -259,16 +259,16 @@
         <a href="#fundadores" class="text-xs font-semibold uppercase tracking-wider text-gray-400 hover:text-white transition">Quem Somos</a>
         <a href="#diferenciais" class="text-xs font-semibold uppercase tracking-wider text-gray-400 hover:text-white transition">Diferenciais</a>
       </div>
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-4 shrink-0">
         <a href="https://www.instagram.com/aguiardata/" target="_blank" class="hidden md:block text-gray-400 hover:text-brand-cyan transition text-lg" aria-label="Instagram">
           <i class="fab fa-instagram"></i>
         </a>
-        <a href="https://wa.me/5581984130211?text=Vim%20pelo%20site%20da%20Aguiar%20Data%20e%20gostaria%20de%20agendar%20uma%20reunião%20para%20conhecer%20as%20soluções." target="_blank"
+        <a href="https://wa.me/5581984130211?text=Vim%20pelo%20site%20da%20Aguiar%20Data%20e%20gostaria%20de%20agendar%20uma%20reuni%C3%A3o%20para%20conhecer%20as%20solu%C3%A7%C3%B5es." target="_blank"
            class="hidden md:inline-flex px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider bg-white text-black hover:bg-brand-cyan hover:text-black transition duration-300 shadow-lg shadow-white/5">
           Agendar Reunião
         </a>
         <!-- Hamburger Button (mobile only) -->
-        <button id="menuBtn" class="md:hidden hamburger flex flex-col gap-[6px] p-1" aria-label="Abrir menu">
+        <button id="menuBtn" class="md:hidden hamburger flex flex-col gap-[6px] p-2" aria-label="Abrir menu">
           <span></span><span></span><span></span>
         </button>
       </div>
